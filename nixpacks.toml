@@ -1,0 +1,24 @@
+[phases.setup]
+nixPkgs = ['python39', 'nodejs-16_x', 'python39Packages.pip', 'python39Packages.flask', 'python39Packages.gunicorn']
+
+[phases.install]
+cmds = [
+  'python -m pip install --upgrade pip',
+  'pip install -r requirements.txt',
+  'cd src && npm install && npm run build && cd ..'
+]
+
+[phases.build]
+cmds = [
+  'mkdir -p uploads output',
+  'chmod 777 uploads output'
+]
+
+[start]
+cmd = 'gunicorn --bind 0.0.0.0:3000 --workers=4 --timeout=120 app:app'
+
+[variables]
+FLASK_APP = 'app.py'
+FLASK_ENV = 'production'
+PORT = '3000'
+HOST = '0.0.0.0' 
